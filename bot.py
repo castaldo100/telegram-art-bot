@@ -22,22 +22,33 @@ updater = Updater(token=Token, use_context=True)
 dispatcher = updater.dispatcher
 
 
-def inline_caps(update, context):
-    query = update.inline_query.query
-    if not query:
-        return
-    results = list()
-    results.append(
-        InlineQueryResultArticle(
-            id=query.upper(),
-            title='Stunden bis Wochenende',
-            input_message_content=InputTextMessageContent(query.upper())
+def start(update, context):
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, 
+        text="Schreib' mir die ID eines Kunstwerkes und ich sende dir Informationen dazu."
         )
-    )
-    context.bot.answer_inline_query(update.inline_query.id, results)
 
-inline_caps_handler = InlineQueryHandler(inline_caps)
-dispatcher.add_handler(inline_caps_handler)
+start_handler = CommandHandler('start', start)
+dispatcher.add_handler(start_handler)
+
+info = {
+    '1':'ein haus',
+    '2':'zwei häuser',
+    '3':'drei häuser'
+    }
+
+
+
+# Für reguläre Nachrichten
+def echo(update, context):
+    
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, 
+        text=
+        )
+
+echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+dispatcher.add_handler(echo_handler)
 
 # Geht mit unbekannten Commands um
 # Muss am Ende stehen
