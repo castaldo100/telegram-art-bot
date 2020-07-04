@@ -25,41 +25,55 @@ dispatcher = updater.dispatcher
 def start(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
-        text="Schreib' mir die ID eines Kunstwerkes und ich sende dir Informationen dazu."
+        text="Schreib mir '/info ID' (ohne Anführungszeichen) wobei ID die Nummer eines Kunstwerkes ist und ich sende dir Informationen dazu."
         )
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 
-info = {
+informationen = {
     '1':'ein haus',
-    '2':'zwei häuser',
-    '3':'drei häuser'
+    '2':'Drei Pfund Spaghetti Bolo auf dem Bauchnabel deiner Mudda',
+    '3':'eine nackige Julia',
+    '4':'ein rollmopsiger Turing, der gegrault werden will'
     }
 
-def describe(update, context):
-    werk_id = update.message.text
-    text = info[werk_id]
+def info(update, context):
+    werk_id = ' '.join(context.args)
+
+    if len(werk_id) < 1:
+        text = 'Die ID fehlt'
+    else:
+        try:
+            text = informationen[werk_id]
+        except:
+            text = str(
+                'Die ID (' 
+                + werk_id 
+                + ') kann ich leider nicht finden.'
+                + '\n'
+                + "Schreib mir '/ids', um alle möglichen IDs zu erhalten"
+                )   
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
         text=text
         )
 
-describe_handler = CommandHandler('describe', describe)
-dispatcher.add_handler(describe_handler)
+info_handler = CommandHandler('info', info)
+dispatcher.add_handler(info_handler)
 
-
-# Für reguläre Nachrichten
-def echo(update, context):
-    werk_id = update.message.text
-    text = info[werk_id]
+def ids(update, context):
+    keys = []
+    for key in informationen.keys():
+        keys.append(key)
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
-        text=text
+        text='Es gibt zu folgenden IDs Inhalte:' + str(keys)
         )
 
-echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
-dispatcher.add_handler(echo_handler)
+ids_handler = CommandHandler('ids', ids)
+dispatcher.add_handler(ids_handler)
+
 
 # Geht mit unbekannten Commands um
 # Muss am Ende stehen
