@@ -37,14 +37,25 @@ info = {
     '3':'drei häuser'
     }
 
+def describe(update, context):
+    werk_id = update.message.text
+    text = info[werk_id]
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, 
+        text=text
+        )
+
+describe_handler = CommandHandler('describe', describe)
+dispatcher.add_handler(describe_handler)
 
 
 # Für reguläre Nachrichten
 def echo(update, context):
-    
+    werk_id = update.message.text
+    text = info[werk_id]
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
-        text=
+        text=text
         )
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
