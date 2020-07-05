@@ -84,9 +84,9 @@ dispatcher.add_handler(start_handler)
 
 informationen = {
     '1':'ein haus',
-    '2':'Drei Pfund Spaghetti Bolo auf dem Bauchnabel deiner Mudda',
-    '3':'eine nackige Julia',
-    '4':'ein rollmopsiger Turing, der gegrault werden will',
+    '2':'ein blaues Haus',
+    '3':'ein Portrait',
+    '4':'ein Kater, der grault werden will',
     '5': 'Neues Item',
     '7751':'Kein anderes Bild Spitzwegs erfreut sich heute so großer Popularität wie der "arme Poet". Das Klischee des sich nur auf das Geistige konzentrierenden Dichters, den materielle Äußerlichkeiten nicht interessieren, hat Spitzweg hier prototypisch ins Bild gesetzt: In einem schäbigen Dachzimmer auf einer Matratze liegend, gegen die Kälte mit einer Decke, einer abgewetzten Jacke und einer Schlafhaube ausgerüstet und mit einem Schirm gegen eindringendes Regenwasser geschützt, scheint der Dichter sich unbeirrt von den widrigen äußeren Bedingungen ganz der Ausarbeitung eines Gedichtes zu widmen. Als das Bild 1839 im Münchner Kunstverein der Öffentlichkeit vorgestellt wurde, stieß es allerdings mit seiner ironisierenden Darstellung des verarmten Dichters auf Kritik. Man verstand das Bild als Angriff auf die Idealität der Dichtkunst und zugleich als Angriff auf die idealisierende Kunst schlechthin, wie sie vor allem durch die akademische Historienmalerei vertreten wurde. Auch werden die oft elenden Umstände deutlich, unter denen eine Vielzahl verarmter Künstler zu leiden hatte, und wird die von Zeitgenossen diskutierte Frage nach dem Sinn und Zweck einer überquellenden, aber oft nur mittelmäßigen Kunstproduktion gestellt: die Werke des Dichters liegen vor dem Ofen als Heizmaterial bereit.'
     }
@@ -145,6 +145,3 @@ dispatcher.add_handler(unknown_handler)
 updater.start_polling()
 # Script stoppen mit ctrl + c
 updater.idle() # wartet auf ctrl + c 
-
-
-
