@@ -61,15 +61,6 @@ def error(update, context):
     # we raise the error again, so the logger module catches it. If you don't use the logger module, use it.
     raise
 
-informationen = {
-    '1':'ein haus',
-    '2':'ein blaues Haus',
-    '3':'ein Portrait',
-    '4':'ein Kater, der grault werden will',
-    '5': 'Neues Item',
-    '7751':'Kein anderes Bild Spitzwegs erfreut sich heute so großer Popularität wie der "arme Poet". Das Klischee des sich nur auf das Geistige konzentrierenden Dichters, den materielle Äußerlichkeiten nicht interessieren, hat Spitzweg hier prototypisch ins Bild gesetzt: In einem schäbigen Dachzimmer auf einer Matratze liegend, gegen die Kälte mit einer Decke, einer abgewetzten Jacke und einer Schlafhaube ausgerüstet und mit einem Schirm gegen eindringendes Regenwasser geschützt, scheint der Dichter sich unbeirrt von den widrigen äußeren Bedingungen ganz der Ausarbeitung eines Gedichtes zu widmen. Als das Bild 1839 im Münchner Kunstverein der Öffentlichkeit vorgestellt wurde, stieß es allerdings mit seiner ironisierenden Darstellung des verarmten Dichters auf Kritik. Man verstand das Bild als Angriff auf die Idealität der Dichtkunst und zugleich als Angriff auf die idealisierende Kunst schlechthin, wie sie vor allem durch die akademische Historienmalerei vertreten wurde. Auch werden die oft elenden Umstände deutlich, unter denen eine Vielzahl verarmter Künstler zu leiden hatte, und wird die von Zeitgenossen diskutierte Frage nach dem Sinn und Zweck einer überquellenden, aber oft nur mittelmäßigen Kunstproduktion gestellt: die Werke des Dichters liegen vor dem Ofen als Heizmaterial bereit.'
-    }
-
 def info(update, context):
     werk_id = ' '.join(context.args)
 
@@ -77,7 +68,7 @@ def info(update, context):
         text = 'Die ID fehlt. Schreib mir z.B.: /info 3'
     else:
         try:
-            text = informationen[werk_id]
+            text = context.bot_data[werk_id]
         except:
             text = str(
                 'Die ID (' 
@@ -96,35 +87,30 @@ dispatcher.add_handler(info_handler)
 
 def ids(update, context):
     keys = []
-    for key in informationen.keys():
-        keys.append(key)
-    context.bot.send_message(
-        chat_id=update.effective_chat.id, 
-        text='Es gibt zu folgenden IDs Inhalte:' + str(keys)
-        )
+    for key in context.bot_data.keys():
+        keys.append(str(key))
+    if len(keys) > 0:
+        ids = ', '.join(keys)
+    else:
+        ids = "Leider gibt es noch keine Ids. Schreib mit '/einreichen' um der erste zu sein"
+    update.message.reply_text("Es gibt folgende IDs:\n" + str(ids))
 
 ids_handler = CommandHandler('ids', ids)
 dispatcher.add_handler(ids_handler)
 
 def einreichen(update, context):
-    user_id = ' '.join(context.args)
-    context.bot.send_message(
-        chat_id=update.effective_chat.id, 
-        text="Schreib mir deine Beschreibung des Kunstwerkes"
-        )
-    user_des = update.message.text
-    if user_des != '/einreichen':
-        
-        update.message.reply_text(
-            "Danke! Die Beschreibung lautet: " 
-            + str(user_des)
-            )
+    if update.message.text == '/einreichen':
+        update.message.reply_text("Hier kannst du deine eigenen Texte hinzufügen")
+        update.message.reply_text("Beispiel: '/einreichen 2 Das blaue Pferd von Franz Mark ist mein liebstes Gemälde")
     else:
-        context.bot.send_message(
-        chat_id=update.effective_chat.id, 
-        text="Schreib mir bitte deine Beschreibung des Kunstwerkes"
-        )
-        
+        try:
+            werk_id =  int(update.message.text.split(' ')[1])
+            text = update.message.text.split(' ')[2:]
+            context.bot_data[werk_id] = ' '.join(text)
+            update.message.reply_text("Danke. Dein Eintrag wurde gespeichert.")
+        except:
+            update.message.reply_text("Es fehlt wohl die ID. Schreib '/einreichen', um ein Beispiel zu sehen.")
+
 
 einreichen_handler = CommandHandler('einreichen', einreichen)
 dispatcher.add_handler(einreichen_handler) 
@@ -132,16 +118,15 @@ dispatcher.add_handler(einreichen_handler)
 
 
 def start(update, context):
-    context.bot.send_message(
-        chat_id=update.effective_chat.id, 
-        text="Schreib mir '/info ID' (ohne Anführungszeichen) "
+    update.message.reply_text("Schreib mir '/info ID' (ohne Anführungszeichen) "
         + "wobei ID die Nummer eines Kunstwerkes ist "
         + "und ich sende dir Informationen dazu."
         + "Oder schreib mir '/ids' um alle Ids zu sehen, die du nutzen kannst"
         )
     button_list = [[
             telegram.InlineKeyboardButton('/info'),
-            telegram.InlineKeyboardButton('/ids')
+            telegram.InlineKeyboardButton('/ids'),
+            telegram.InlineKeyboardButton('/einreichen')
         ]]
     reply_markup = telegram.ReplyKeyboardMarkup(button_list)
     bot.send_message(chat_id=update.effective_chat.id, text="👇🏻 hier findest du die Buttons", reply_markup=reply_markup)
@@ -154,10 +139,7 @@ dispatcher.add_handler(start_handler)
 # Geht mit unbekannten Commands um
 # Muss am Ende stehen
 def unknown(update, context):
-    context.bot.send_message(
-        chat_id=update.effective_chat.id, 
-        text="Es tut mir leid, diesen Befehl gibt es nicht."
-        )
+    update.message.reply_text("Es tut mir leid, diesen Befehl gibt es nicht.")
 
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
