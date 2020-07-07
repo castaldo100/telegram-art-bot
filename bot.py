@@ -118,10 +118,12 @@ dispatcher.add_handler(einreichen_handler)
 
 
 def start(update, context):
-    update.message.reply_text("Schreib mir '/info ID' (ohne Anführungszeichen) "
+    update.message.reply_text(
+        "Schreib mir '/info ID' (ohne Anführungszeichen) "
         + "wobei ID die Nummer eines Kunstwerkes ist "
         + "und ich sende dir Informationen dazu."
-        + "Oder schreib mir '/ids' um alle Ids zu sehen, die du nutzen kannst"
+        + " Oder schreib mir '/ids' um alle Ids zu sehen, die du nutzen kannst."
+        + " Oder schreib mir '/einreichen' um den aktuellen Eintrag zu überschreiben"
         )
     button_list = [[
             telegram.InlineKeyboardButton('/info'),
