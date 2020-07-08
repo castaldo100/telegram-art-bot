@@ -91,16 +91,16 @@ def start(update, context):
     )
     time.sleep(12)
     update.message.reply_text(
-        "1. Damit du weißt, welche Kunstwerke bereits einen Text haben, nutze den Button '/ids'\n"
-        "Wenn du die ID von einem Kunstwerk gefunden hast, schreibe mir z.B.: \n\n'/info 32' \n\ndann sende ich dir den Text zum Kunstwerk mit der ID 32.\n\n"
+        "1. Damit du weißt, welche Kunstwerke bereits einen Text haben, nutze den Button /ids\n"
+        "Wenn du die ID von einem Kunstwerk gefunden hast, schreibe mir z.B.: \n\n/info 32 \n\ndann sende ich dir den Text zum Kunstwerk mit der ID 32.\n\n"
         )
     time.sleep(13)
     update.message.reply_text(
-        "2. Wenn du einen Text einreichen magst, schreibe mir z.B. \n\n'/einreichen 32 Ich finde das Gemälde erinnert mich an meine Heimat'\n\nund schon hast du anonym einen Text zum Kunstwerk mit der ID 32 verfasst. \n\n"
+        "2. Wenn du einen Text einreichen magst, schreibe mir z.B. \n\n/einreichen 32 Ich finde das Gemälde erinnert mich an meine Heimat\n\nund schon hast du anonym einen Text zum Kunstwerk mit der ID 32 verfasst. \n\n"
         )
     time.sleep(10)
     update.message.reply_text(
-        "Diesen Text lesen nun die anderen Nutzer, wenn sie mir \n\n'/info 32'\n\nschreiben.\n\n"
+        "Diesen Text lesen nun die anderen Nutzer, wenn sie mir \n\n/info 32\n\nschreiben.\n\n"
         )
     time.sleep(5)
     update.message.reply_text(
