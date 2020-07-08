@@ -68,8 +68,10 @@ def info(update, context):
     if len(werk_id) < 1:
         text = "Die Identifikationsnummer (ID) fehlt. Schreib mir z.B.: '/info 3' "
     else:
+        print (type(werk_id))
+        print (werk_id)
         try:
-            text = context.bot_data[werk_id]
+            text = context.bot_data[int(werk_id)]
         except:
             text = str(
                 "Zur ID (" + werk_id + ") kann ich leider nichts finden.🥺\n"
@@ -88,6 +90,7 @@ def ids(update, context):
     keys = []
     for key in context.bot_data.keys():
         keys.append(str(key))
+    keys.sort()
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
