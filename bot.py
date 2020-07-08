@@ -8,6 +8,7 @@ from functools import wraps
 from telegram import ParseMode
 from telegram.utils.helpers import mention_html
 
+import time
 import sys
 import traceback
 import logging
@@ -65,17 +66,14 @@ def info(update, context):
     werk_id = ' '.join(context.args)
 
     if len(werk_id) < 1:
-        text = 'Die ID fehlt. Schreib mir z.B.: /info 3'
+        text = "Die Identifikationsnummer (ID) fehlt. Schreib mir z.B.: '/info 3' "
     else:
         try:
             text = context.bot_data[werk_id]
         except:
             text = str(
-                'Die ID (' 
-                + werk_id 
-                + ') kann ich leider nicht finden.'
-                + '\n'
-                + "Schreib mir '/ids', um alle möglichen IDs zu erhalten"
+                "Zur ID (" + werk_id + ") kann ich leider nichts finden.🥺\n"
+                "Schreibe mir '/ids', um alle IDs mit Texten zu erhalten"
                 )   
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
@@ -92,8 +90,11 @@ def ids(update, context):
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
-        ids = "Leider gibt es noch keine Ids. Schreib mit '/einreichen' um der erste zu sein"
-    update.message.reply_text("Es gibt folgende IDs:\n" + str(ids))
+        ids = "❌Leider gibt es noch keine Ids. Schreib mit '/einreichen' um der erste zu sein\n"
+    update.message.reply_text(
+        "Es gibt Texte über die Kunstwerke mit den folgenden IDs:\n" 
+        + str(ids) + "\n\n"
+        + "🧐 Eine ID ist eine Nummer, die du meistens neben dem Titel des Kunstwerkes findest")
 
 ids_handler = CommandHandler('ids', ids)
 dispatcher.add_handler(ids_handler)
@@ -107,9 +108,9 @@ def einreichen(update, context):
             werk_id =  int(update.message.text.split(' ')[1])
             text = update.message.text.split(' ')[2:]
             context.bot_data[werk_id] = ' '.join(text)
-            update.message.reply_text("Danke. Dein Eintrag wurde gespeichert.")
+            update.message.reply_text("Danke. 😎Dein Eintrag wurde gespeichert. 🎉")
         except:
-            update.message.reply_text("Es fehlt wohl die ID. Schreib '/einreichen', um ein Beispiel zu sehen.")
+            update.message.reply_text("Es fehlt wohl die ID. 😱Schreibe mir '/einreichen', um ein Beispiel zu sehen.")
 
 
 einreichen_handler = CommandHandler('einreichen', einreichen)
@@ -119,11 +120,19 @@ dispatcher.add_handler(einreichen_handler)
 
 def start(update, context):
     update.message.reply_text(
-        "Schreib mir '/info ID' (ohne Anführungszeichen) "
-        + "wobei ID die Nummer eines Kunstwerkes ist "
-        + "und ich sende dir Informationen dazu."
-        + " Oder schreib mir '/ids' um alle Ids zu sehen, die du nutzen kannst."
-        + " Oder schreib mir '/einreichen' um den aktuellen Eintrag zu überschreiben"
+        "Hi! Ich bin Artsy-Bot. 🤖🖼\n"
+        "Ich habe 2 Funktionen: \n "
+        "1. Ich texte dir einen Gedanken über ein bestimmtes Kunstwerk\n"
+        "2. Du kannst mir DEINE Gedanken über ein bestimmtes Kunstwerk schreiben, sodass jemand anderes sie lesen kann\n"
+        "❌ Mehr kann ich nicht – und ich werde auch nicht auf deine sonstigen Nachrichten reagieren können. Sorry 😅\n\n"
+    )
+    time.sleep(5)
+    update.message.reply_text(
+        "Damit du weißt, welche Kunstwerke bereits einen Text haben, nutze den Button '/ids'\n"
+        "Wenn du die ID von einem Kunstwerk gefunden hast, schreibe mir z.B. '/info 32', dann sende ich dir den Text zum Kunstwerk mit der ID 32\n"
+        "Wenn du einen Text einreichen magst, schreibe mir z.B. '/einreichen 32 Ich finde das Gemälde erinnert mich an meine Heimat' und schon hast du anonym einen Text zum Kunstwerk mit der ID 32 verfasst. \n"
+        "Diesen Text lesen nun die anderen Nutzer, wenn sie mir '/info 32' schreiben.\n"
+        "Eine ausführliche Erklärung und die Datenschutzrichtlinien findest du auf kulturdata.de"
         )
     button_list = [[
             telegram.InlineKeyboardButton('/info'),
@@ -141,7 +150,7 @@ dispatcher.add_handler(start_handler)
 # Geht mit unbekannten Commands um
 # Muss am Ende stehen
 def unknown(update, context):
-    update.message.reply_text("Es tut mir leid, diesen Befehl gibt es nicht.")
+    update.message.reply_text("Es tut mir leid, diesen Befehl kenne ich nicht 😭")
 
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
