@@ -18,25 +18,27 @@ updater = Updater(token=Token, use_context=True)
 dispatcher = updater.dispatcher
 
 def info(update, context):
-    if not context.chat_data[update.effective_chat.id]:
-        update.message.reply_text(
-            "You haven't yet told me which museum you are visiting.\n\n"  
-            "Please start by sending me \n/museum\n to see which museum is already part of our community."
+    werk_id = ' '.join(context.args)
+    
+    if not context.chat_data:
+        text = str(
+            "You haven't yet told me which museum you are visiting.\n\n"
+            + "Please start by sending me \n/ids\n"
+            + "to see which museum is already part of our community."
+        )
     else:
         museum = context.chat_data[update.effective_chat.id]
-        pass
-        
-    werk_id = ' '.join(context.args)
-    if len(werk_id) < 1:
-        text = "The identification number is missing. Write i.e. /info 3"
-    else:
-        try:
-            text = context.bot_data[(museum, werk_id)]
-        except:
-            text = str(
-                "Unfortunately, there is no record for ID " + werk_id + " 🥺\n"
-                "Write /ids to see all available IDs"
-                )   
+        if len(werk_id) < 1:
+            text = "The identification number is missing. Write i.e. /info 3"
+        else:
+            try:
+                text = context.bot_data[(museum, werk_id)]
+            except:
+                text = str(
+                    "Unfortunately, there is no record for ID " 
+                    + werk_id + " 🥺\n"
+                    "Write /ids to see all available IDs"
+                    )          
     context.bot.send_message(
         chat_id=update.effective_chat.id, 
         text=text
@@ -47,16 +49,24 @@ dispatcher.add_handler(info_handler)
 
 
 def ids(update, context):
+    museum = context.chat_data[update.effective_chat.id]
     keys = []
     for key in context.bot_data.keys():
-        keys.append(str(key))
+        if key[0] == museum:
+            print ('key0 ist museum')
+            keys.append(key[1])
+        else:
+            pass
     keys.sort()
+    print ("keys:", keys)
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
-        ids = "❌Sorry, I don't know any artworks yet. Write'/submit' and be the first collaborator!🥰\n"
+        ids = "❌Sorry, I don't know any artworks or museums yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
     update.message.reply_text(
-        "I know descriptions for the following museums and IDs:\n\n" 
+        "Name of the Museum: "
+        + museum
+        + "\n\nI know descriptions for the following IDs:\n\n" 
         + str(ids) + "\n\n"
         + "[🧐 An ID is a so called 'Identification Number' that you will find next to the artwork to use a audio guide.]")
 
@@ -64,36 +74,55 @@ ids_handler = CommandHandler('ids', ids)
 dispatcher.add_handler(ids_handler)
 
 def museum(update, context):
-    museum = ' '.join(context.args) 
-    chat_id=update.effective_chat.id
-    context.chat_data[chat_id] = museum
-    print (context.chat_data)
-    context.bot.send_message(
-        chat_id=chat_id, 
-        text="Thanks📍. Now I know which artworks to look for. If you want to change the museum, just repeat this process."
-        )
+    museum = ' '.join(context.args).lower()
+    if len(museum) < 1:
+        museum_keys = []
+        for key in context.bot_data.keys():
+            museum_keys.append(str(key[0])) 
+        
+        museum_keys = set(sorted(museum_keys)) # Only unique museums
+        
+        if len(museum_keys) > 0:
+            ids = ', '.join(museum_keys)
+        else:
+            ids = "❌Sorry, I don't know any museum yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
+        update.message.reply_text(
+            "I know descriptions for the following museums:\n\n" 
+            + str(ids) + "\n\n"
+            + "☞ When you check in to your museum via /museum YOUR MUSEUM, make sure to type the name of the museum exactly like in this list.")
+    else:
+        chat_id=update.effective_chat.id
+        context.chat_data[chat_id] = museum
+        print (context.chat_data)
+        context.bot.send_message(
+            chat_id=chat_id, 
+            text="Thanks📍. Now I know which artworks to look for. If you want to change the museum, just repeat this process."
+            )
 
 museum_handler = CommandHandler('museum', museum)
 dispatcher.add_handler(museum_handler) 
 
 
 def submit(update, context):
-    if update.message.text == '/submit':
-        update.message.reply_text("Now you can submit your own description. For example:\n\n")
-        update.message.reply_text("/submit 2 'Blue Horses' by Franz Marc is my favorite painting. It's so 'neighT'")
+    if not context.chat_data:
+        update.message.reply_text("Before you can submit a text, please tell me which museum you're visiting. Please send me:\n\n/museum\n\nto get started.😎")
     else:
-        try:
-            museum = context.chat_data[update.effective_chat.id]
-            werk_id =  int(update.message.text.split(' ')[1])
-            text = update.message.text.split(' ')[2:]
-            context.bot_data[(museum, werk_id)] = ' '.join(text)
-            update.message.reply_text(
-                "Thanks! – also on behalf of the whole community. 😎Your description has been saved.🎉\n\n" 
-                "Write: \n\n/info "
-                + str(werk_id) + "\n\n"
-                + " to find your submission. 🙋🏽")
-        except:
-            update.message.reply_text("The ID seems to be missing. 😱Write /submit to find an example.")
+        if update.message.text == '/submit':
+            update.message.reply_text("Now you can submit your own description. For example:\n\n")
+            update.message.reply_text("/submit 2 'Blue Horses' by Franz Marc is my favorite painting. It's so 'neighT'")
+        else:
+            try:
+                museum = context.chat_data[update.effective_chat.id]
+                werk_id =  update.message.text.split(' ')[1]
+                text = update.message.text.split(' ')[2:]
+                context.bot_data[(museum, werk_id)] = ' '.join(text)
+                update.message.reply_text(
+                    "Thanks! – also on behalf of the whole community. 😎Your description has been saved.🎉\n\n" 
+                    "Write: \n\n/info "
+                    + str(werk_id) + "\n\n"
+                    + " to find your submission. 🙋🏽")
+            except:
+                update.message.reply_text("There was an error – sorry. 😱Write /submit to find an example.")
 
 
 submit_handler = CommandHandler('submit', submit)
@@ -129,6 +158,7 @@ def start(update, context):
     button_list = [[
             telegram.InlineKeyboardButton('/info'),
             telegram.InlineKeyboardButton('/ids'),
+            telegram.InlineKeyboardButton('/museum'),
             telegram.InlineKeyboardButton('/submit')
         ]]
     reply_markup = telegram.ReplyKeyboardMarkup(button_list)
