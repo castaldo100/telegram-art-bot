@@ -18,14 +18,20 @@ updater = Updater(token=Token, use_context=True)
 dispatcher = updater.dispatcher
 
 def info(update, context):
+    if not context.chat_data[update.effective_chat.id]:
+        update.message.reply_text(
+            "You haven't yet told me which museum you are visiting.\n\n"  
+            "Please start by sending me \n/museum\n to see which museum is already part of our community."
+    else:
+        museum = context.chat_data[update.effective_chat.id]
+        pass
+        
     werk_id = ' '.join(context.args)
     if len(werk_id) < 1:
         text = "The identification number is missing. Write i.e. /info 3"
     else:
-        print (type(werk_id))
-        print (werk_id)
         try:
-            text = context.bot_data[int(werk_id)]
+            text = context.bot_data[(museum, werk_id)]
         except:
             text = str(
                 "Unfortunately, there is no record for ID " + werk_id + " 🥺\n"
@@ -50,12 +56,25 @@ def ids(update, context):
     else:
         ids = "❌Sorry, I don't know any artworks yet. Write'/submit' and be the first collaborator!🥰\n"
     update.message.reply_text(
-        "I know descriptions for the following IDs:\n\n" 
+        "I know descriptions for the following museums and IDs:\n\n" 
         + str(ids) + "\n\n"
-        + "[🧐 An ID is a so called 'Identification Number' that you will find next to the artwork.]")
+        + "[🧐 An ID is a so called 'Identification Number' that you will find next to the artwork to use a audio guide.]")
 
 ids_handler = CommandHandler('ids', ids)
 dispatcher.add_handler(ids_handler)
+
+def museum(update, context):
+    museum = ' '.join(context.args) 
+    chat_id=update.effective_chat.id
+    context.chat_data[chat_id] = museum
+    print (context.chat_data)
+    context.bot.send_message(
+        chat_id=chat_id, 
+        text="Thanks📍. Now I know which artworks to look for. If you want to change the museum, just repeat this process."
+        )
+
+museum_handler = CommandHandler('museum', museum)
+dispatcher.add_handler(museum_handler) 
 
 
 def submit(update, context):
@@ -64,9 +83,10 @@ def submit(update, context):
         update.message.reply_text("/submit 2 'Blue Horses' by Franz Marc is my favorite painting. It's so 'neighT'")
     else:
         try:
+            museum = context.chat_data[update.effective_chat.id]
             werk_id =  int(update.message.text.split(' ')[1])
             text = update.message.text.split(' ')[2:]
-            context.bot_data[werk_id] = ' '.join(text)
+            context.bot_data[(museum, werk_id)] = ' '.join(text)
             update.message.reply_text(
                 "Thanks! – also on behalf of the whole community. 😎Your description has been saved.🎉\n\n" 
                 "Write: \n\n/info "
