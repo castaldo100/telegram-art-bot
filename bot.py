@@ -49,16 +49,17 @@ dispatcher.add_handler(info_handler)
 
 
 def ids(update, context):
-    museum = context.chat_data[update.effective_chat.id]
+    try:
+        museum = context.chat_data[update.effective_chat.id]
+    except:
+        museum = ""
     keys = []
     for key in context.bot_data.keys():
         if key[0] == museum:
-            print ('key0 ist museum')
             keys.append(key[1])
         else:
             pass
     keys.sort()
-    print ("keys:", keys)
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
