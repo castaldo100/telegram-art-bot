@@ -1,9 +1,9 @@
 """
 User generated MUSEUM GUIDE on the messenger app 'telegram'. 
-Works at every museum which shows an identification number next to an exhibit.
+Works at every museum which shows an identification number (ID) next to an exhibit.
 Telegram Bot made by © Holger Kurtz | KulturData.de
 
-[Learn how to do your own bot at https://github.com/python-telegram-bot/python-telegram-bot/wiki ]
+[Made with https://github.com/python-telegram-bot/python-telegram-bot/wiki ]
 """
 
 import telegram
