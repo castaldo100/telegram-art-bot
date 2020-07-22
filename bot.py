@@ -1,6 +1,9 @@
 """
-User generated museum guide on telegram. Work at every museum which shows IDs next to a exhibit.
-Telegram Bot by © Holger Kurtz | KulturData.de 
+User generated MUSEUM GUIDE on the messenger app 'telegram'. 
+Works at every museum which shows an identification number next to an exhibit.
+Telegram Bot made by © Holger Kurtz | KulturData.de
+
+[Learn how to do your own bot at https://github.com/python-telegram-bot/python-telegram-bot/wiki ]
 """
 
 import telegram
@@ -10,13 +13,13 @@ import json
 import time
 import logging
 
-# Log stuff: I don't know what it does, but nice to have
+# Logging stuff
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
     level=logging.INFO
     )
 
-# GET Telegram Token from file: creds.json
+# Get Telegram Token from file: creds.json
 telegram_credential_path = 'telegram_creds.json'
 with open(telegram_credential_path, "r") as json_file:
     telegram_creds = json.load(json_file)
@@ -26,6 +29,19 @@ TOKEN = telegram_creds["Token"]
 bot = telegram.Bot(token=TOKEN)
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
+
+"""
+Information is stored like this:
+
+bot_data = {
+    ('museum','id') : 'text'
+}
+
+chat_data = {
+    'user_id' : 'museum' # so the user can change to a museum without changing the bot_data Database
+}
+
+"""
 
 # /info
 def info(update, context):
@@ -67,7 +83,7 @@ def ids(update, context):
     
     keys = []
     for key in context.bot_data.keys(): # Tuple as Key for dict
-        if key[0] == museum: # Filters the ids for the museum
+        if key[0] == museum: # Filters the ids (type: tuple) for the museum
             keys.append(key[1])
         else:
             pass
@@ -76,13 +92,13 @@ def ids(update, context):
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
-        ids = "❌Sorry, I don't know any artworks or museums yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
+        ids = "❌Sorry, I don't know any exhibits or museums yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
     update.message.reply_text(
         "Name of the Museum:\n"
         + museum
         + "\n\nI know descriptions for the following IDs:\n\n" 
         + str(ids) + "\n\n"
-        + "[🧐 An ID is a so called 'Identification Number' that you will find next to the artwork to use a audio guide. Some artworks might not have an ID 🥺]")
+        + "[🧐 An ID is a so called 'Identification Number' that you will find next to the exhibit to use an audio guide. Some exhibits might not have an ID 🥺]")
 
 ids_handler = CommandHandler('ids', ids)
 dispatcher.add_handler(ids_handler)
@@ -113,7 +129,7 @@ def museum(update, context):
             chat_id=chat_id, 
             text="Thanks📍 Welcome to: "
             + str(museum)
-            + " Now I know which artworks to look for. " 
+            + " Now I know which exhibits to look for. " 
             + "If you want to change the museum, just repeat this process."
             )
 
@@ -155,8 +171,8 @@ def start(update, context):
     update.message.reply_text(
         "Hi, I'm Artsy-Bot! 🤖🖼\n"
         "I have 2 functions: \n"
-        "1. I can tell you something about a specific artwork\n"
-        "2. YOU can tell me something about an artwork so I can share your text with other users\n"
+        "1. I can tell you something about a specific exhibit\n"
+        "2. YOU can tell me something about an exhibit so I can share your text with other users\n"
         "❌ That's all I can do. And I'm like your sh*tty ex boyfriend and will ghost you, if you ask me anything else. 👻😅\n\n"
     )
     time.sleep(12)
@@ -166,12 +182,12 @@ def start(update, context):
         )
     time.sleep(13)
     update.message.reply_text(
-        "2. Use the button /ids to find out which artworks I already know something about.\n"
-        "When you have found the ID of an artwork you're interested in, just write i.e.:\n\n/info 32 \n\nthen I will send you the corresponding text to the artwork with the ID 32\n\n"
+        "2. Use the button /ids to find out which exhibit I already know something about.\n"
+        "When you have found the ID of an exhibit you're interested in, just write i.e.:\n\n/info 32 \n\nthen I will send you the corresponding text to the exhibit with the ID 32\n\n"
         )
     time.sleep(13)
     update.message.reply_text(
-        "3. If you want to submit a text, write\n\n/submit 32 The painting reminds me of home.\n\n✅ That's all you have to do to anonymously submit your description for artwork 32.\n\n"
+        "3. If you want to submit a text, write\n\n/submit 32 The painting reminds me of home.\n\n✅ That's all you have to do to anonymously submit your thoughts on exhibit 32.\n\n"
         )
     time.sleep(10)
     update.message.reply_text(
