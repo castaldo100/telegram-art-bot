@@ -26,12 +26,13 @@ with open(telegram_credential_path, "r") as json_file:
 TOKEN = telegram_creds["Token"]
 
 # Basics to start a Bot
+my_persistence = PicklePersistence(filename='db.pickle'))
 bot = telegram.Bot(token=TOKEN)
-updater = Updater(token=TOKEN, use_context=True)
+updater = Updater(token=TOKEN, persistence=my_persistence, use_context=True)
 dispatcher = updater.dispatcher
 
 """
-Information is stored like this:
+Information is stored like this in telegram:
 
 bot_data = {
     ('museum','id') : 'text'
@@ -41,6 +42,7 @@ chat_data = {
     'user_id' : 'museum' # so the user can change to a museum without changing the bot_data Database
 }
 
+If the bot is stopped or the code breaks, everything is deleted.
 """
 
 # /info
