@@ -5,6 +5,7 @@ __pycache__/
 
 # Dateien
 test.py
+telegram_creds.json
 
 # vscode
 .vscode/
