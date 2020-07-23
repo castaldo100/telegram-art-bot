@@ -176,29 +176,29 @@ def start(update, context):
         "I have 2 functions: \n"
         "1. I can tell you something about a specific exhibit\n"
         "2. YOU can tell me something about an exhibit so I can share your text with other users\n"
-        "❌ That's all I can do. And I'm like your sh*tty ex boyfriend and will ghost you, if you ask me anything else. 👻😅\n\n"
+        "❌ That's all I can do. And I'm like your sh*tty ex boyfriend and will ghost you, if you ask me anything else. 👻😅\n\n(...) 1/6"
     )
     time.sleep(12)
     update.message.reply_text(
         "1. Use the button /museum to find out which museums I already know something about.\n"
-        "When you found the museum you're visiting, just write i.e.:\n\n/museum met new york \n\nthen we're ready to talk.\n\n"
+        "When you found the museum you're visiting, just write i.e.:\n\n/museum met new york \n\nthen we're ready to talk.\n\n(...) 2/6"
         )
     time.sleep(13)
     update.message.reply_text(
         "2. Use the button /ids to find out which exhibit I already know something about.\n"
-        "When you have found the ID of an exhibit you're interested in, just write i.e.:\n\n/info 32 \n\nthen I will send you the corresponding text to the exhibit with the ID 32\n\n"
+        "When you have found the ID of an exhibit you're interested in, just write i.e.:\n\n/info 32 \n\nthen I will send you the corresponding text to the exhibit with the ID 32\n\n(...) 3/6"
         )
     time.sleep(13)
     update.message.reply_text(
-        "3. If you want to submit a text, write\n\n/submit 32 The painting reminds me of home.\n\n✅ That's all you have to do to anonymously submit your thoughts on exhibit 32.\n\n"
+        "3. If you want to submit a text, write\n\n/submit 32 The painting reminds me of home.\n\n✅ That's all you have to do to anonymously submit your thoughts on exhibit 32.\n\n(...) 4/6"
         )
     time.sleep(10)
     update.message.reply_text(
-        "4. Other people can now access this description when they write\n\n/info 32\n\n"
+        "4. Other people can now access this description when they write\n\n/info 32\n\n(...) 5/6"
         )
     time.sleep(5)
     update.message.reply_text(
-        "A more detailed explanation and the data privacy statement at kulturdata.de\n\n"
+        "A more detailed explanation and the data privacy statement at kulturdata.de\n\n(...) 6/6"
         )
     button_list = [[
             telegram.InlineKeyboardButton('/museum'),
