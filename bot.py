@@ -1,7 +1,7 @@
 """
 User generated MUSEUM GUIDE on the messenger app 'telegram'. 
 Works at every museum which shows an identification number (ID) next to an exhibit.
-Telegram Bot made by © Holger Kurtz | KulturData.de
+Made by © Holger Kurtz | KulturData.de – Text by the awesome Julia Ripke
 
 [Made with https://github.com/python-telegram-bot/python-telegram-bot/wiki ]
 """
@@ -42,8 +42,6 @@ bot_data = {
 chat_data = {
     'user_id' : 'museum' # so the user can change to a museum without changing the bot_data Database
 }
-
-If the bot is stopped or the code breaks, everything is deleted.
 """
 
 # /info
