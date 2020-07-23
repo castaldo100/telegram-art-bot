@@ -7,7 +7,7 @@ Telegram Bot made by © Holger Kurtz | KulturData.de
 """
 
 import telegram
-from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, PicklePersistence
 
 import json
 import time
@@ -18,6 +18,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
     level=logging.INFO
     )
+logger = logging.getLogger(__name__)
 
 # Get Telegram Token from file: creds.json
 telegram_credential_path = 'telegram_creds.json'
@@ -25,8 +26,8 @@ with open(telegram_credential_path, "r") as json_file:
     telegram_creds = json.load(json_file)
 TOKEN = telegram_creds["Token"]
 
-# Basics to start a Bot
-my_persistence = PicklePersistence(filename='db.pickle'))
+# Basics to start a Bot and making its data persistence
+my_persistence = PicklePersistence(filename='database')
 bot = telegram.Bot(token=TOKEN)
 updater = Updater(token=TOKEN, persistence=my_persistence, use_context=True)
 dispatcher = updater.dispatcher
