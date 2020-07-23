@@ -1,5 +1,6 @@
 """
 User generated MUSEUM GUIDE on the messenger app 'telegram'. 
++++ t.me/MuseumGuideBot +++
 Works at every museum which shows an identification number (ID) next to an exhibit.
 Made by © Holger Kurtz | KulturData.de – Text by the awesome Julia Ripke
 
@@ -27,6 +28,7 @@ with open(telegram_credential_path, "r") as json_file:
 TOKEN = telegram_creds["Token"]
 
 # Basics to start a Bot and making its data persistence
+# Delete the database file if you want to start new. Just clearing it doesn't work.
 my_persistence = PicklePersistence(filename='database')
 bot = telegram.Bot(token=TOKEN)
 updater = Updater(token=TOKEN, persistence=my_persistence, use_context=True)
@@ -93,7 +95,7 @@ def ids(update, context):
     if len(keys) > 0:
         ids = ', '.join(keys)
     else:
-        ids = "❌Sorry, I don't know any exhibits or museums yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
+        ids = "❌Sorry, I don't know anything yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
     update.message.reply_text(
         "Name of the Museum:\n"
         + museum
@@ -117,18 +119,18 @@ def museum(update, context):
         if len(museum_keys) > 0:
             ids = ', '.join(museum_keys)
         else:
-            ids = "❌Sorry, I don't know any museum yet. 1. Write /museum YOUR MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
+            ids = "❌Sorry, I don't know any museum yet. 1. Write /museum NAME OF THE MUSEUM to check into your museum. 2. Write'/submit' and be the first collaborator in this museum!🥰\n"
         
         update.message.reply_text(
             "I know descriptions for the following museums:\n\n" 
             + str(ids) + "\n\n"
-            + "☞ When you check in to your museum via /museum YOUR MUSEUM, make sure to type the name of the museum exactly like in this list.")
+            + "☞ When you check into your museum via /museum NAME OF THE MUSEUM, make sure to type the name of the museum exactly like it's listed.")
     else: # if user writes i.e. /museum met new york
         chat_id=update.effective_chat.id
         context.chat_data[chat_id] = museum
         context.bot.send_message(
             chat_id=chat_id, 
-            text="Thanks📍 Welcome to: "
+            text="Thanks✅ Welcome to📍: "
             + str(museum)
             + " Now I know which exhibits to look for. " 
             + "If you want to change the museum, just repeat this process."
@@ -170,7 +172,7 @@ dispatcher.add_handler(submit_handler)
 # /start Explanation of the bot
 def start(update, context):
     update.message.reply_text(
-        "Hi, I'm Artsy-Bot! 🤖🖼\n"
+        "Hi, I'm MuseumGuideBot! 🤖🖼\n"
         "I have 2 functions: \n"
         "1. I can tell you something about a specific exhibit\n"
         "2. YOU can tell me something about an exhibit so I can share your text with other users\n"
@@ -179,7 +181,7 @@ def start(update, context):
     time.sleep(12)
     update.message.reply_text(
         "1. Use the button /museum to find out which museums I already know something about.\n"
-        "When you have found the museum you're visiting, just write i.e.:\n\n/museum met new york \n\nthen we're ready to talk art.\n\n"
+        "When you found the museum you're visiting, just write i.e.:\n\n/museum met new york \n\nthen we're ready to talk.\n\n"
         )
     time.sleep(13)
     update.message.reply_text(
@@ -192,7 +194,7 @@ def start(update, context):
         )
     time.sleep(10)
     update.message.reply_text(
-        "4. Other people can now access this description when the write\n\n/info 32\n\n"
+        "4. Other people can now access this description when they write\n\n/info 32\n\n"
         )
     time.sleep(5)
     update.message.reply_text(
